@@ -1,0 +1,71 @@
+﻿Program.Sub.Preflight.Start
+Program.Sub.Preflight.End
+
+Program.Sub.Main.Start
+v.Local.sParam.Declare
+v.Local.sPart.Declare
+Function.Intrinsic.UI.UsePixels ' Allows you to use Pixels instead of Twips throughout
+f.Intrinsic.Control.Try
+''Try something
+'	'Hook
+'	f.Intrinsic.Control.If(v.Caller.Hook, <>, 55505)
+'		f.Intrinsic.Control.End
+'	f.Intrinsic.Control.EndIf
+'	f.Intrinsic.UI.InvokeWaitDialog("Project  6693 Running...")
+'	'Update
+'	f.ODBC.Connection!con.OpenCompanyConnection
+'		f.ODBC.Connection!con.Execute("UPDATE CONFIG_MFG SET CATEGORY = 'P' WHERE LMO LIKE 'M' AND (SOURCE LIKE 'M' OR SOURCE LIKE 'F');")
+'	f.ODBC.Connection!con.Close
+'	'Rebuild Routers
+'	f.Global.General.CallWrapperSync(1000, v.Caller.CompanyCode)
+'	f.Intrinsic.UI.CloseWaitDialog
+'	'End
+'	f.Intrinsic.Control.End
+	
+	'New Logic after Talking to Zac
+	
+	'Configurator screen from Order No
+	f.Intrinsic.Control.If(v.Caller.Hook, =, 49530)
+		f.Intrinsic.UI.InvokeWaitDialog("Project  6693 Running...")
+			'Get Routers
+			v.Local.sPart.Set(Variable.Passed.000092)
+			f.Intrinsic.Control.If(v.Local.sPart.Trim, =, "")
+				f.Intrinsic.UI.CloseWaitDialog
+				f.Intrinsic.Control.End
+			f.Intrinsic.Control.EndIf
+			f.Intrinsic.String.Build("{0}!*!{0}", v.Local.sPart.Trim, v.Local.sParam)
+			'Rebuild Routers
+			f.Global.General.CallWrapperSync(1001, v.Local.sParam)			
+		f.Intrinsic.UI.CloseWaitDialog
+	f.Intrinsic.Control.EndIf
+	
+	'Configurator Screen from Menu
+	f.Intrinsic.Control.If(v.Caller, =, 55505)
+		f.Intrinsic.UI.InvokeWaitDialog("Project  6693 Running...")
+			'Update
+			f.ODBC.Connection!con.OpenCompanyConnection
+				f.ODBC.Connection!con.Execute("UPDATE CONFIG_MFG SET CATEGORY = 'P' WHERE LMO LIKE 'M' AND (SOURCE LIKE 'M' OR SOURCE LIKE 'F');")
+			f.ODBC.Connection!con.Close
+		f.Intrinsic.UI.CloseWaitDialog
+	f.Intrinsic.Control.EndIf
+	'End
+	f.Intrinsic.Control.End
+f.Intrinsic.Control.Catch
+	f.Intrinsic.UI.CloseWaitDialog
+	f.Intrinsic.Control.CallSub(ErrorMsg, CurrentSub, v.Ambient.CurrentSubroutine)
+f.Intrinsic.Control.EndTry
+Program.Sub.Main.End
+
+Program.Sub.ErrorMsg.Start
+v.Local.sError.Declare
+
+'Generic Error message.
+f.Intrinsic.String.Build("Project GCG_6693_SetPhantomParts.g2u {0}{0}Subroutine: {1}{0}Error: {2} with Description: {3}", v.Ambient.NewLine, v.Args.CurrentSub, v.Ambient.ErrorNumber, v.Ambient.ErrorDescription, v.Local.sError)
+f.Intrinsic.UI.Msgbox(v.Local.sError)
+f.Intrinsic.Control.End
+Program.Sub.ErrorMsg.End
+
+Program.Sub.Comments.Start
+${$5$}$3.0.0.0$}$1
+${$6$}$aanazco$}$20220509120027983$}$7aQAV3Tor/tR9bkuakHbuzQlHVuXCGOzXYdb4iJi8O0GhC9HL0ZDuzHM7wb6DQ9vdgQFCJWsujg=
+Program.Sub.Comments.End
